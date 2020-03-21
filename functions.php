@@ -1,3 +1,5 @@
+<?php
+
 add_filter('woocommerce_subscriptions_frontend_view_subscription_script_parameters','d_script_params', 10 ,1);
 
 function d_script_params($script_params){
