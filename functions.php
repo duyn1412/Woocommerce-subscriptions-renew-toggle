@@ -60,3 +60,25 @@ function disable_auto_renew_cs(){
       send_ajax_response_cs( $subscription );
     }
 }
+
+
+function check_renew_toggle($subscription){
+
+	// Cannot change to auto-renewal for a subscription with status other than active
+		if ( ! $subscription->has_status( 'active' ) ) {
+			return false;
+		}
+	
+		// Cannot change to auto-renewal for a subscription in the final billing period. No next renewal date.
+		if ( 0 == $subscription->get_date( 'next_payment' ) ) { // Not using strict comparison intentionally
+			return false;
+		}
+		// If it is not a manual subscription, and the payment gateway is PayPal Standard
+		if ( ! $subscription->is_manual() && $subscription->payment_method_supports( 'gateway_scheduled_payments' ) ) {
+			return false;
+		}
+
+		// Looks like changing to auto-renewal is indeed possible
+		return true;
+
+}
